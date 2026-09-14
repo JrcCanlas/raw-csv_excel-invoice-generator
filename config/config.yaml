@@ -1,0 +1,51 @@
+project:
+  year: 2027
+  months: 1
+  rows_per_month: 1000
+  seed: 20260331
+  output: output
+  output_formats: ["csv"]
+
+master:
+  supplier_count: 8000
+  companies: ["1000", "1100", "2000", "2100"]
+  business_units: ["Operations", "Technology", "Corporate", "Shared Services"]
+  regions: ["APAC", "EMEA", "AMER"]
+  countries: ["PH", "SG", "AU", "JP", "US", "CA", "GB", "DE"]
+  currencies: ["USD", "PHP", "SGD", "AUD", "JPY", "CAD", "GBP", "EUR"]
+  categories:
+    [
+      "IT",
+      "Facilities",
+      "Professional Services",
+      "Logistics",
+      "Utilities",
+      "Telecom",
+    ]
+  payment_terms: [0, 15, 30, 45, 60, 90]
+  payment_term_weights: [0.03, 0.07, 0.48, 0.17, 0.20, 0.05]
+
+erp:
+  line_counts: [1, 2, 3, 4, 5]
+  line_weights: [0.43, 0.31, 0.16, 0.07, 0.03]
+  po_rate: 0.80
+  credit_memo_rate: 0.03
+  statuses: ["PAID", "OPEN", "PARTIALLY_PAID", "ON_HOLD"]
+  status_weights: [0.66, 0.21, 0.07, 0.06]
+
+workflow:
+  outcomes: ["SUCCESS", "BLOCKED", "PARKED", "REJECTED"]
+  outcome_weights: [0.84, 0.06, 0.06, 0.04]
+  reopen_rate: 0.35
+  processor_count: 400
+
+anomalies:
+  enabled: true
+  missing_supplier: 0.003
+  malformed_date: 0.0002
+  duplicate_erp: 0.001
+  late_arrival: 0.015
+  status_conflict: 0.0005
+  inconsistent_case: 0.001
+  orphan_workflow: 0.0005
+  duplicate_workflow: 0.001

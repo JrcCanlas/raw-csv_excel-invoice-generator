@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+output/erp/*.xlsx
+output/workflow/*.xlsx
+output/manifests/*.json
+output/validation/*.json
+output/.staging/

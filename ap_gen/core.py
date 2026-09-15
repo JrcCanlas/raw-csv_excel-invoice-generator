@@ -51,3 +51,46 @@ def save_json(value, path):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(value, f, indent=2, default=str)
+
+
+def write_csv(df, path):
+    """Write a dataframe to CSV without adding a pandas index column."""
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(path, index=False)
+
+
+def write_xlsx(df, path, sheet):
+    """Write a dataframe to a formatted, filterable Excel worksheet."""
+    if len(df) > 1_048_575:
+        raise ValueError("Excel worksheet limit exceeded")
+
+    wb = xlsxwriter.Workbook(
+        str(path),
+        {"constants_memory": True, "strings_to_urls": False},
+    )
+    ws = wb.add_worksheet(sheet)
+    header = wb.add_format({"bold": True, "bg_color": "#D9EAF7", "border": 1})
+    date_format = wb.add_format({"num_format": "yyyy-mm-dd hh:mm:ss"})
+
+    ws.freeze_panes(1, 0)
+    for column, name in enumerate(df.columns):
+        ws.write(0, column, name, header)
+
+    if len(df.columns):
+        ws.autofilter(0, 0, len(df), len(df.columns) - 1)
+
+    # Write rows one at a time so Xlsxwriter can use constant-memory mode.
+    for row_number, row in enumerate(df.itertuples(index=False, name=None), 1):
+        for column, value in enumerate(row):
+            if value is None or pd.isna(value):
+                continue
+            if isinstance(value, pd.Timestamp):
+                value = value.to_pydatetime()
+            if isinstance(value, np.generic):
+                value = value.item()
+            if isinstance(value, datetime):
+                ws.write_datetime(row_number, column, value, date_format)
+            else:
+                ws.write(row_number, column, value)
+
+    wb.close()

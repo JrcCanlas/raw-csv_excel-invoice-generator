@@ -94,3 +94,27 @@ def write_xlsx(df, path, sheet):
                 ws.write(row_number, column, value)
 
     wb.close()
+
+
+def supplier_master(cfg):
+    """Build the repeatable synthetic supplier master from configuration values."""
+    md = cfg["master"]
+    n = md["supplier_count"]
+
+    return pd.DataFrame(
+        {
+            "SUPPLIER_ID": [f"SUP-{i:06d}" for i in range(1, n + 1)],
+            "SUPPLIER_NAME": [f"Synthetic Supplier {i:06d}" for i in range(1, n + 1)],
+            "COUNTRY_CODE": [
+                md["countries"][i % len(md["countries"])] for i in range(n)
+            ],
+            "CURRENCY": [md["currencies"][i % len(md["currencies"])] for i in range(n)],
+            "CRITICAL_FLAG": ["Y" if i % 20 == 0 else "N" for i in range(n)],
+        }
+    )
+
+
+def sample_indices(rng, length, rate):
+    """Choose unique row positions for an anomaly rate between zero and one."""
+    count = int(length * rate)
+    return [] if count == 0 else rng.choice(length, count, replace=False)

@@ -118,3 +118,57 @@ def sample_indices(rng, length, rate):
     """Choose unique row positions for an anomaly rate between zero and one."""
     count = int(length * rate)
     return [] if count == 0 else rng.choice(length, count, replace=False)
+
+
+def erp_anomalies(df, rng, rates):
+    """Apply configured data-quality scenarios to generated ERP rows."""
+    if not rates["enabled"]:
+        return df
+
+    ix = sample_indices(rng, len(df), rates["missing_supplier"])
+    df.loc[ix, "SUPPLIER_NAME"] = None
+    df.loc[ix, "DQ_SCENARIO"] = "MISSING_SUPPLIER"
+
+    ix = sample_indices(rng, len(df), rates["malformed_date"])
+    df.loc[ix, "DUE_DATE_RAW"] = "2206-13-40"
+    df.loc[ix, "DQ_SCENARIO"] = "MALFORED_DATE"
+
+    ix = sample_indices(rng, len(df), rates["late_arrival"])
+    df.loc[ix, "LAST_UPDATED_TIMESTAMP"] += pd.Timedelta(days=45)
+    df.loc[ix, "LATE_ARRIVAL_FLAG"] = 1
+    df.loc[ix, "DQ_SCENARIO"] = "LATE_ARRIVAL"
+
+    ix = sample_indices(rng, len(df), rates["status_conflict"])
+    df.loc[ix, "PAYMENT_STATUS"] = "PAID"
+    df.loc[ix, "PAYMENT_DATE"] = pd.NaT
+    df.loc[ix, "DQ_SCENARIO"] = "STATUS_CONFLICT"
+
+    ix = sample_indices(rng, len(df), rates["inconsistent_case"])
+    df.loc[ix, "PAYMENT_STATUS"] = "paid "
+    df.loc[ix, "DQ_SCENARIO"] = "INCONSISTENT_CASE"
+
+    target = sample_indices(rng, len(df), rates["duplicate_erp"])
+    if len(target):
+        source = rng.choice(len(df), len(target), replace=False)
+        df.iloc[target] = df.iloc[source].to_numpy()
+        df.loc[target, "DQ_SCENARIO"] = "DUPLICATE_ERP_ROW"
+
+    return df
+
+
+def workflow_anomalies(df, rng, rates):
+    """Apply configured orphan and duplicate scenario to workflow events."""
+    if df.empty or not rates["enabled"]:
+        return df
+
+    ix = sample_indices(rng, len(df), rates["orphan_workflow"])
+    df.loc[ix, "INVOICE_ID"] = "INV-ORPHAN"
+    df.loc[ix, "DQ_SCENARIO"] = "ORPHAN_REFERENCE"
+
+    count = int(len(df) * rates["duplicate_workflow"])
+    if count:
+        duplicate = df.iloc[rng.choice(len(df), count, replace=False)].copy()
+        duplicate["DQ_SCENARIO"] = "DUPLICATE_WORKFLOW"
+        df = pd.concat([df, duplicate], ignore_index=True)
+
+    return df

@@ -13,7 +13,7 @@ import xlsxwriter
 def load_config(path="config/config.yaml"):
     """Load a YAML configuration file and return it as a dictionary."""
     with open(path, encoding="utf-8") as f:
-        return
+        return yaml.safe_load(f)
 
 
 def month_end(year, month):

@@ -2,7 +2,7 @@
 
 import argparse, json
 import pandas as pd
-from apgen.core import directories, load_config, output_formats, save_json
+from ap_gen.core import directories, load_config, output_formats, save_json
 
 
 def validate(cfg):

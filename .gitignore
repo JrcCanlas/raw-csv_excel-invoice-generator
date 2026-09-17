@@ -222,7 +222,9 @@ __pycache__/
 .pytest_cache/
 *.pyc
 output/erp/*.xlsx
+output/erp/*.csv
 output/workflow/*.xlsx
+output/workflow/*.csv
 output/manifests/*.json
 output/validation/*.json
 output/.staging/

@@ -4,7 +4,7 @@ import argparse, shutil
 import numpy as np
 import pandas as pd
 
-from apgen.core import (
+from ap_gen.core import (
     directories,
     load_config,
     month_end,

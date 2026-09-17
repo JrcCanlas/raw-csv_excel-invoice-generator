@@ -1,7 +1,7 @@
 """Run ERP generation, workflow generation, and validation in sequence."""
 
 import argparse
-from apgen.core import load_config
+from ap_gen.core import load_config
 from erp import generate as generate_erp
 from workflow import generate as generate_workflow
 from validate import validate

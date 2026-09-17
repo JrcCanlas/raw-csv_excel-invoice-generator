@@ -48,7 +48,7 @@ def build_month(cfg, month, rng, suppliers):
         )
     counts = np.asarray(counts)
     invoice_count = np.searchsorted(np.cumsum(counts), rows) + 1
-    invoice_index = np.repeat(np.arrange(invoice_count), counts[:invoice_count])[:rows]
+    invoice_index = np.repeat(np.arange(invoice_count), counts[:invoice_count])[:rows]
     line_number = (
         pd.Series(invoice_index).groupby(invoice_index).cumcount().to_numpy() + 1
     )

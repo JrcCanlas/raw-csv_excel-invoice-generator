@@ -2,7 +2,7 @@
 
 Generates monthly raw AP ERP distribution files and related workflow-event files.
 
-## High-Level Architecture
+## Project Flow
 
 ![High Level Architecture](images/Synthetic%20AP%20Invoice%20Generator%20Project%20Diagram.jpg)
 

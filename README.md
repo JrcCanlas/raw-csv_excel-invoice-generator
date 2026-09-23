@@ -2,6 +2,10 @@
 
 Generates monthly raw AP ERP distribution files and related workflow-event files.
 
+## High-Level Architecture
+
+![High Level Architecture](images/Synthetic%20AP%20Invoice%20Generator%20Project%20Diagram.jpg)
+
 ## Project convention
 
 - `config/config.yaml` is the source of truth for the year, month count, row volume, random seed, output location, and anomaly rates.

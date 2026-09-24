@@ -1,8 +1,8 @@
 project:
-  year: 2027
-  months: 1
-  rows_per_month: 1000
-  seed: 20260331
+  year: 2026
+  months: 12
+  rows_per_month: 1000 # 10000000
+  seed: 123456 #20260331
   output: output
   output_formats: ["csv"]
 
